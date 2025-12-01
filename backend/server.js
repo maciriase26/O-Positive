@@ -1,15 +1,12 @@
-require("dotenv").config();
-const express = require("express");
-const cors = require("cors");
+require('dotenv').config();
+const express = require('express');
+const cors = require('cors');
 
 const app = express();
+const PORT = process.env.PORT || 4000;
 
 app.use(cors());
 app.use(express.json());
-
-app.get("/health", (req, res) => {
-  res.json({ status: "ok" });
-});
 
 const API_KEY = process.env.CALORIE_API_KEY;
 
@@ -100,9 +97,7 @@ function getMockResults(query) {
   }));
 }
 
-const PORT = process.env.PORT || 4000;
-
 app.listen(PORT, () => {
-  console.log(`Backend running on port ${PORT}`);
-  console.log(`Test calorie API: http://localhost:${PORT}/calories/search?q=apple`);
+  console.log(`Server running on http://localhost:${PORT}`);
+  console.log(`Test the API: http://localhost:${PORT}/calories/search?q=apple`);
 });
