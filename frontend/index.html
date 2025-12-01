@@ -1,0 +1,75 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Calorie Tracker</title>
+  <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+  <div class="container">
+    <header>
+      <h1>Calorie Tracker</h1>
+    </header>
+
+    <section class="daily-summary">
+      <h2>Today's Progress</h2>
+      <div class="progress-container">
+        <div class="progress-bar">
+          <div class="progress-fill" id="progressFill"></div>
+        </div>
+        <div class="calorie-stats">
+          <span id="currentCalories">0</span> / <span id="goalCalories">2000</span> kcal
+        </div>
+      </div>
+      <div class="macro-summary" id="macroSummary">
+        <div class="macro-item">
+          <span class="macro-label">Protein</span>
+          <span class="macro-value" id="totalProtein">0g</span>
+        </div>
+        <div class="macro-item">
+          <span class="macro-label">Carbs</span>
+          <span class="macro-value" id="totalCarbs">0g</span>
+        </div>
+        <div class="macro-item">
+          <span class="macro-label">Fat</span>
+          <span class="macro-value" id="totalFat">0g</span>
+        </div>
+      </div>
+    </section>
+
+    <section class="search-section">
+      <h2>Search Foods</h2>
+      <div class="search-bar">
+        <input 
+          type="text" 
+          id="searchInput" 
+          placeholder="Search for a food (e.g., apple, chicken breast, pizza)..."
+          autocomplete="off"
+        >
+        <button id="searchBtn">Search</button>
+      </div>
+      <div id="searchResults" class="search-results"></div>
+    </section>
+
+    <section class="todays-foods">
+      <h2>Today's Foods</h2>
+      <div id="todaysList" class="foods-list">
+        <p class="empty-message">No foods added yet. Search and add foods above!</p>
+      </div>
+      <button id="clearAllBtn" class="clear-btn" style="display: none;">Clear All</button>
+    </section>
+
+    <section class="goal-section">
+      <h2>Daily Goal</h2>
+      <div class="goal-input">
+        <input type="number" id="goalInput" value="2000" min="1000" max="5000">
+        <span>kcal</span>
+        <button id="setGoalBtn">Set Goal</button>
+      </div>
+    </section>
+  </div>
+
+  <script src="app.js"></script>
+</body>
+</html>
