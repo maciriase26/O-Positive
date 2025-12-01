@@ -1,0 +1,122 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="style.css">
+    <title>Health Dashboard</title>
+</head>
+
+<body>
+    <div class="dashboard">
+        <div class="header">
+            <h1>Health & Fitness Dashboard</h1>
+            <p>Track your daily health goals and progress</p>
+        </div>
+
+        <div class="grid">
+            <!-- Water Tracker Card -->
+            <div class="card">
+                <div class="card-header">
+                    <i>💧</i>
+                    <h2>Water Intake</h2>
+                </div>
+                <div class="water-container">
+                    <div class="cup">
+                        <div class="water-fill" id="waterFill"></div>
+                    </div>
+                    <div class="water-stats">
+                        <div class="amount" id="waterAmount">0 ml</div>
+                        <div class="goal">Goal: <span id="waterGoal">2000</span> ml</div>
+                    </div>
+                    <div class="progress-container">
+                        <div class="progress-bar">
+                            <div class="progress-fill water-progress" id="waterProgressBar"></div>
+                        </div>
+                        <div class="progress-text">
+                            <span>0%</span>
+                            <span id="waterPercentage">0%</span>
+                        </div>
+                    </div>
+                    <div class="log-buttons">
+                        <button class="btn btn-primary" onclick="logWater(250)">+250 ml</button>
+                        <button class="btn btn-primary" onclick="logWater(500)">+500 ml</button>
+                        <button class="btn btn-primary" onclick="logWater(1000)">+1000 ml</button>
+                    </div>
+                    <div class="custom-input">
+                        <input type="number" id="customWater" placeholder="Custom amount (ml)" min="1">
+                        <button onclick="logCustomWater()">Add</button>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Steps Tracker Card -->
+            <div class="card">
+                <div class="card-header">
+                    <i>👣</i>
+                    <h2>Steps</h2>
+                </div>
+                <div class="steps-container">
+                    <div class="water-stats">
+                        <div class="amount" id="stepsAmount">0</div>
+                        <div class="goal">Goal: <span id="stepsGoal">10000</span> steps</div>
+                    </div>
+                    <div class="progress-container">
+                        <div class="progress-bar">
+                            <div class="progress-fill steps-progress" id="stepsProgressBar"></div>
+                        </div>
+                        <div class="progress-text">
+                            <span>0%</span>
+                            <span id="stepsPercentage">0%</span>
+                        </div>
+                    </div>
+                    <div class="log-buttons">
+                        <button class="btn btn-success" onclick="logSteps(1000)">+1000 steps</button>
+                        <button class="btn btn-success" onclick="logSteps(2000)">+2000 steps</button>
+                        <button class="btn btn-success" onclick="logSteps(5000)">+5000 steps</button>
+                    </div>
+                    <div class="custom-input">
+                        <input type="number" id="customSteps" placeholder="Custom steps" min="1">
+                        <button onclick="logCustomSteps()">Add</button>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Calories Tracker Card -->
+            <div class="card">
+                <div class="card-header">
+                    <i>🔥</i>
+                    <h2>Calories Burned</h2>
+                </div>
+                <div class="calories-container">
+                    <div class="water-stats">
+                        <div class="amount" id="caloriesAmount">0 kcal</div>
+                        <div class="goal">Goal: <span id="caloriesGoal">2000</span> kcal</div>
+                    </div>
+                    <div class="progress-container">
+                        <div class="progress-bar">
+                            <div class="progress-fill calories-progress" id="caloriesProgressBar"></div>
+                        </div>
+                        <div class="progress-text">
+                            <span>0%</span>
+                            <span id="caloriesPercentage">0%</span>
+                        </div>
+                    </div>
+                    <div class="log-buttons">
+                        <button class="btn btn-warning" onclick="logCalories(100)">+100 kcal</button>
+                        <button class="btn btn-warning" onclick="logCalories(250)">+250 kcal</button>
+                        <button class="btn btn-warning" onclick="logCalories(500)">+500 kcal</button>
+                    </div>
+                    <div class="custom-input">
+                        <input type="number" id="customCalories" placeholder="Custom calories" min="1">
+                        <button onclick="logCustomCalories()">Add</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+<script src="script.js"></script>
+</body>
+
+</html>
