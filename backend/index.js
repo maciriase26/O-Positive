@@ -11,6 +11,138 @@ app.get("/health", (req, res) => {
   res.json({ status: "ok" });
 });
 
+// Try to use DB if available, otherwise fall back to in-memory stores
+let pool;
+try {
+  pool = require('./db/connection');
+} catch (e) {
+  console.warn('DB connection module not available, will use in-memory stores');
+}
+
+const inMemory = {
+  friends: [
+    { id: 1, name: "Alex", email: "alex@example.com", status: "On track", lastActive: "Today", streakDays: 6 },
+    { id: 2, name: "Jordan", email: "jordan@example.com", status: "Check in", lastActive: "Yesterday", streakDays: 3 },
+    { id: 3, name: "Sam", email: "sam@example.com", status: "Ghosting", lastActive: "3 days ago", streakDays: 0 },
+  ],
+  nudges: [],
+};
+
+// Demo current user id (in a real app use auth)
+const DEMO_USER_EMAIL = process.env.DEMO_USER_EMAIL || 'demo@local';
+let DEMO_USER_ID = null;
+
+async function ensureDemoUser() {
+  if (!pool) return null;
+  try {
+    const res = await pool.query('SELECT id FROM users WHERE email = $1 LIMIT 1', [DEMO_USER_EMAIL]);
+    if (res.rows.length > 0) {
+      DEMO_USER_ID = res.rows[0].id;
+      return DEMO_USER_ID;
+    }
+    const insert = await pool.query(
+      `INSERT INTO users (name, email, password_hash) VALUES ($1, $2, $3) RETURNING id`,
+      ['Demo User', DEMO_USER_EMAIL, 'demo']
+    );
+    DEMO_USER_ID = insert.rows[0].id;
+    return DEMO_USER_ID;
+  } catch (err) {
+    console.warn('Could not ensure demo user:', err.message);
+    return null;
+  }
+}
+
+// GET /friends/list — prefers DB, falls back
+app.get('/friends/list', async (req, res) => {
+  if (pool) {
+    try {
+      await ensureDemoUser();
+      const q = `
+        SELECT u.id, u.name, u.email, f.status, u.created_at as last_active
+        FROM friends f
+        JOIN users u ON u.id = f.friend_id
+        WHERE f.user_id = $1
+        ORDER BY u.name
+      `;
+      const result = await pool.query(q, [DEMO_USER_ID]);
+      return res.json({ friends: result.rows.map(r => ({ id: r.id, name: r.name, email: r.email, status: r.status, lastActive: r.last_active })) });
+    } catch (err) {
+      console.warn('DB friends list failed, falling back to memory:', err.message);
+    }
+  }
+  res.json({ friends: inMemory.friends });
+});
+
+// POST /friends/add — create user if needed and friend pivot
+app.post('/friends/add', async (req, res) => {
+  const { name, email } = req.body;
+  if (!name && !email) return res.status(400).json({ error: 'name or email required' });
+  if (pool) {
+    try {
+      await ensureDemoUser();
+      // find or create user
+      const identifier = email || name;
+      let userRes = await pool.query('SELECT id, name, email FROM users WHERE email = $1 LIMIT 1', [identifier]);
+      if (userRes.rows.length === 0) {
+        const ins = await pool.query('INSERT INTO users (name, email, password_hash) VALUES ($1, $2, $3) RETURNING id, name, email', [name || identifier, email || null, 'demo']);
+        userRes = { rows: [ins.rows[0]] };
+      }
+      const friendId = userRes.rows[0].id;
+      // insert friends pivot (user -> friend)
+      try {
+        await pool.query('INSERT INTO friends (user_id, friend_id, status) VALUES ($1, $2, $3)', [DEMO_USER_ID, friendId, 'pending']);
+      } catch (e) {
+        // ignore duplicate
+      }
+      return res.json({ friend: { id: friendId, name: userRes.rows[0].name, email: userRes.rows[0].email, status: 'Pending', lastActive: 'Not yet', streakDays: 0 } });
+    } catch (err) {
+      console.warn('DB add friend failed, falling back to memory:', err.message);
+    }
+  }
+  // fallback
+  const id = Date.now();
+  const friend = { id, name: name || email, email: email || null, status: 'Pending', lastActive: 'Not yet', streakDays: 0 };
+  inMemory.friends.unshift(friend);
+  res.json({ friend });
+});
+
+// POST /friends/accept — set status accepted
+app.post('/friends/accept', async (req, res) => {
+  const { id } = req.body;
+  if (pool) {
+    try {
+      await pool.query('UPDATE friends SET status = $1, updated_at = CURRENT_TIMESTAMP WHERE friend_id = $2 AND user_id = $3', ['accepted', Number(id), DEMO_USER_ID]);
+      return res.json({ friend: { id: Number(id), status: 'On track' } });
+    } catch (err) {
+      console.warn('DB accept friend failed:', err.message);
+    }
+  }
+  const f = inMemory.friends.find(x => x.id === Number(id));
+  if (!f) return res.status(404).json({ error: 'friend not found' });
+  f.status = 'On track';
+  res.json({ friend: f });
+});
+
+// POST /friends/nudge — record a nudge event in DB or memory
+app.post('/friends/nudge', async (req, res) => {
+  const { id, message } = req.body;
+  if (pool) {
+    try {
+      await ensureDemoUser();
+      // insert into nudges table if exists
+      await pool.query('INSERT INTO nudges (sender_id, receiver_id, message, created_at) VALUES ($1, $2, $3, CURRENT_TIMESTAMP)', [DEMO_USER_ID, Number(id), message || 'Nudge!']);
+      return res.json({ ok: true, event: { friendId: Number(id), message: message || 'Nudge!' } });
+    } catch (err) {
+      console.warn('DB nudge failed, falling back to memory:', err.message);
+    }
+  }
+  const friend = inMemory.friends.find(x => x.id === Number(id));
+  if (!friend) return res.status(404).json({ error: 'friend not found' });
+  const event = { id: inMemory.nudges.length + 1, friendId: friend.id, message: message || 'Nudge!', at: new Date().toISOString() };
+  inMemory.nudges.push(event);
+  res.json({ ok: true, event });
+});
+
 const API_KEY = process.env.CALORIE_API_KEY;
 
 app.get('/calories/search', async (req, res) => {
