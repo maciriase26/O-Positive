@@ -88,6 +88,111 @@ async function seedWorkouts() {
         equipment: 'Treadmill',
         muscles: 'Cardiovascular, Legs',
         instructions: 'Start with a warm-up walk. Gradually increase speed to your desired pace. Maintain steady breathing throughout your run.'
+      },
+      {
+        name: 'Tricep Dips',
+        type: 'home',
+        equipment: 'Chair or Bench',
+        muscles: 'Triceps, Shoulders, Chest',
+        instructions: 'Sit on the edge of a chair with hands beside your hips. Slide forward and lower your body by bending your elbows. Push back up to starting position.'
+      },
+      {
+        name: 'Glute Bridges',
+        type: 'home',
+        equipment: 'None',
+        muscles: 'Glutes, Hamstrings, Core',
+        instructions: 'Lie on your back with knees bent. Lift your hips by squeezing your glutes. Lower slowly and repeat.'
+      },
+      {
+        name: 'High Knees',
+        type: 'home',
+        equipment: 'None',
+        muscles: 'Legs, Core, Cardiovascular',
+        instructions: 'Jog in place while lifting your knees as high as possible. Maintain a fast pace.'
+      },
+      {
+        name: 'Russian Twists',
+        type: 'home',
+        equipment: 'None',
+        muscles: 'Obliques, Core',
+        instructions: 'Sit on the floor with knees bent. Lean back slightly and twist your torso side to side while keeping your core tight.'
+      },
+      {
+        name: 'Jumping Jacks',
+        type: 'home',
+        equipment: 'None',
+        muscles: 'Full Body, Cardiovascular',
+        instructions: 'Jump your feet out while raising your arms overhead. Jump back to starting position and repeat.'
+      },
+      {
+        name: 'Bicycle Crunches',
+        type: 'home',
+        equipment: 'None',
+        muscles: 'Core, Obliques',
+        instructions: 'Lie on your back and alternate bringing elbows to opposite knees in a pedaling motion.'
+      },
+      {
+        name: 'Pull-Ups',
+        type: 'gym',
+        equipment: 'Pull-Up Bar',
+        muscles: 'Back, Biceps, Shoulders',
+        instructions: 'Hang from the bar with an overhand grip. Pull your body up until your chin is over the bar. Lower with control.'
+      },
+      {
+        name: 'Seated Cable Row',
+        type: 'gym',
+        equipment: 'Cable Machine',
+        muscles: 'Back, Biceps, Shoulders',
+        instructions: 'Sit and grab the handle. Pull toward your torso while keeping your back straight. Return slowly to starting position.'
+      },
+      {
+        name: 'Lat Pulldown',
+        type: 'gym',
+        equipment: 'Lat Pulldown Machine',
+        muscles: 'Back, Biceps, Shoulders',
+        instructions: 'Grip the bar wide and pull it down to your chest. Slowly release it back up.'
+      },
+      {
+        name: 'Barbell Squat',
+        type: 'gym',
+        equipment: 'Barbell, Squat Rack',
+        muscles: 'Quadriceps, Glutes, Hamstrings, Core',
+        instructions: 'Position bar on your shoulders. Lower into a squat while keeping your chest up. Push through your heels to stand.'
+      },
+      {
+        name: 'Chest Fly Machine',
+        type: 'gym',
+        equipment: 'Pec Deck Machine',
+        muscles: 'Chest, Shoulders',
+        instructions: 'Sit and bring the handles together in front of you. Slowly return to starting position with control.'
+      },
+      {
+        name: 'Leg Curl',
+        type: 'gym',
+        equipment: 'Leg Curl Machine',
+        muscles: 'Hamstrings',
+        instructions: 'Position your legs under the pad and curl it toward your glutes. Lower slowly back down.'
+      },
+      {
+        name: 'Shoulder Press',
+        type: 'gym',
+        equipment: 'Dumbbells or Machine',
+        muscles: 'Shoulders, Triceps',
+        instructions: 'Press the weights overhead until arms are extended. Lower slowly to shoulder height.'
+      },
+      {
+        name: 'Stair Climber',
+        type: 'gym',
+        equipment: 'Stair Climber Machine',
+        muscles: 'Legs, Glutes, Cardiovascular',
+        instructions: 'Climb at a steady pace. Maintain proper posture and consistent breathing.'
+      },
+      {
+        name: 'Cable Tricep Pushdown',
+        type: 'gym',
+        equipment: 'Cable Machine',
+        muscles: 'Triceps',
+        instructions: 'Hold the cable bar and push it down until your arms are fully extended. Return with control.'
       }
     ];
 
