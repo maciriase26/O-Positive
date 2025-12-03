@@ -11,6 +11,60 @@ app.get("/health", (req, res) => {
   res.json({ status: "ok" });
 });
 
+// Simple in-memory friends store and nudge events for demo/dev
+// In a real app these would be persisted in the DB (users & friendships tables).
+const friendsStore = [
+  { id: 1, name: "Alex", email: "alex@example.com", status: "On track", lastActive: "Today", streakDays: 6 },
+  { id: 2, name: "Jordan", email: "jordan@example.com", status: "Check in", lastActive: "Yesterday", streakDays: 3 },
+  { id: 3, name: "Sam", email: "sam@example.com", status: "Ghosting", lastActive: "3 days ago", streakDays: 0 },
+];
+
+const nudges = [];
+
+// Get friends list
+app.get("/friends/list", (req, res) => {
+  // In a multi-user app we'd filter by authenticated user.
+  res.json({ friends: friendsStore });
+});
+
+// Add friend (by name or email)
+app.post("/friends/add", (req, res) => {
+  const { name, email } = req.body;
+  if (!name && !email) return res.status(400).json({ error: "name or email required" });
+
+  const id = Date.now();
+  const friend = {
+    id,
+    name: name || email,
+    email: email || null,
+    status: "Pending",
+    lastActive: "Not yet",
+    streakDays: 0,
+  };
+  friendsStore.unshift(friend);
+  res.json({ friend });
+});
+
+// Accept friend (simple toggle)
+app.post("/friends/accept", (req, res) => {
+  const { id } = req.body;
+  const f = friendsStore.find((x) => x.id === Number(id));
+  if (!f) return res.status(404).json({ error: "friend not found" });
+  f.status = "On track";
+  res.json({ friend: f });
+});
+
+// Nudge a friend: store a nudge event
+app.post("/friends/nudge", (req, res) => {
+  const { id, message } = req.body;
+  const friend = friendsStore.find((x) => x.id === Number(id));
+  if (!friend) return res.status(404).json({ error: "friend not found" });
+  const event = { id: nudges.length + 1, friendId: friend.id, message: message || "Nudge!", at: new Date().toISOString() };
+  nudges.push(event);
+  // In a real app we'd also enqueue a notification or send a push.
+  res.json({ ok: true, event });
+});
+
 const API_KEY = process.env.CALORIE_API_KEY;
 
 app.get('/calories/search', async (req, res) => {
